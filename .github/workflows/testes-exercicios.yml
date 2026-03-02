@@ -1,4 +1,4 @@
-name: Exercícios
+name: Corretor de Exercícios
 
 on:
   push:
@@ -44,6 +44,28 @@ jobs:
     defaults:
       run:
         working-directory: 1-bimestre/programacao-web/ex04-pagina-organizada-com-listas
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm test
+
+  ex05-criando-tabelas:
+    name: ex05-criando-tabelas
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 1-bimestre/programacao-web/ex05-criando-tabelas
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm test
+
+  ex06-criando-formularios:
+    name: ex06-criando-formularios
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 1-bimestre/programacao-web/ex06-criando-formularios
     steps:
       - uses: actions/checkout@v3
       - run: npm install

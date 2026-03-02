@@ -1,0 +1,28 @@
+name: Corretor de Projetos
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  projeto1-desenvolvimento-de-pagina-institucional-em-html:
+    name: projeto1-desenvolvimento-de-pagina-institucional-em-html
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 1-bimestre/programacao-web/projetos/projeto1-desenvolvimento-de-pagina-institucional-em-html
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm test
+
+  projeto2-sistema-de-cadastro-e-listagem-de-alunos:
+    name: projeto2-sistema-de-cadastro-e-listagem-de-alunos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 1-bimestre/programacao-web/projetos/projeto2-sistema-de-cadastro-e-listagem-de-alunos
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm test
