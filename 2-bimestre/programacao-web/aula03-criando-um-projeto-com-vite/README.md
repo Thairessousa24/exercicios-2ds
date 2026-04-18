@@ -149,5 +149,6 @@ _
 2. Nome do projeto deve ser "react" (obs: NÃO utilize o . no final do comando!).
 3. Vá até a pasta `extras`, copie e cole no seu projeto os arquivos que contém lá:
     - pasta `test` cole dentro da pasta `src`;
+    - o arquivo `setupTests.js` cole também dentro da pasta `src`;
     - arquivos `package.json` e `vite.config.js` devem substituir pelo os que vem no projeto;
 4. No arquivo `App.jsx`, altere o conteúdo do `<h1>` para "Meu Primeiro Projeto React com Vite".
