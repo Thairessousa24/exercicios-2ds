@@ -1,0 +1,17 @@
+name: Corretor de Projetos
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  projeto1-sistema-de-biblioteca:
+    name: projeto1-sistema-de-biblioteca
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 3-bimestre/orientacao-a-objetos/projetos/projeto1-sistema-de-biblioteca
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm test
