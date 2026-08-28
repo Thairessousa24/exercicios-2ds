@@ -1,0 +1,16 @@
+{
+  "name": "aula10",
+  "version": "1.0.0",
+  "description": "- Compreender o conceito de **Setter** em classes JavaScript. - Aprender a utilizar a palavra-chave `set`. - Alterar propriedades privadas de forma controlada. - Aplicar regras de validação antes de alterar um atributo. - Compreender a diferença entre Getter e Setter. - Utilizar Getter e Setter juntos em uma classe.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}

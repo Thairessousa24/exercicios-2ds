@@ -1,0 +1,16 @@
+{
+  "name": "projeto2-sistema-de-gestao-de-funcionarios",
+  "version": "1.0.0",
+  "description": "Você faz parte da equipe de desenvolvimento de uma empresa de tecnologia.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.5.0"
+  }
+}

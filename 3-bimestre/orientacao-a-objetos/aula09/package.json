@@ -1,0 +1,16 @@
+{
+  "name": "aula09",
+  "version": "1.0.0",
+  "description": "- Compreender o conceito de **Getter** em classes JavaScript. - Entender como criar métodos de acesso para propriedades privadas. - Aprender a utilizar a palavra-chave `get`. - Diferenciar um método tradicional de um Getter. - Utilizar Getter para disponibilizar informações de forma controlada. - Relacionar Getter com o conceito de encapsulamento estudado na aula anterior.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}

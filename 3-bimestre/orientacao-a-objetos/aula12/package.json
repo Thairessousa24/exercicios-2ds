@@ -1,0 +1,16 @@
+{
+  "name": "aula12",
+  "version": "1.0.0",
+  "description": "- Criar métodos estáticos utilizando `static`. - Diferenciar métodos de instância e métodos estáticos. - Entender quando utilizar um método pertencente à classe. - Acessar métodos estáticos diretamente pela classe. - Utilizar métodos estáticos para operações relacionadas à própria classe. - Combinar propriedades e métodos estáticos.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}

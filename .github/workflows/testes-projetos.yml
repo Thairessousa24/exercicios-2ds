@@ -15,3 +15,14 @@ jobs:
       - uses: actions/checkout@v4
       - run: npm install
       - run: npm test
+
+  projeto2-sistema-de-gestao-de-funcionarios:
+    name: projeto2-sistema-de-gestao-de-funcionarios
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 3-bimestre/orientacao-a-objetos/projetos/projeto2-sistema-de-gestao-de-funcionarios
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm test
