@@ -21,24 +21,42 @@ Previsão para 25 à 30-set | Quantidade de Indivíduos: 3 pessoas (5-10 min de 
 - Prova Bimestral: previsão para final de setembro à começo de outubro
 - ✅ **Projeto 1** - Prazo de Entrega 1: 28-ago (2,5 pt) | Prazo de Entrega 2: 30-ago (1,5 pt)<br>
 - ✅ **Projeto 2** - Prazo de Entrega 1: 28-ago (2,5 pt) | Prazo de Entrega 2: 1-set (1,5 pt)<br>
-- ⚠️ **Projeto 3** - Prazo de Entrega 1: 15-set (2,5 pt) | Prazo de Entrega 2: 17-set (1,5 pt)<br>
+- ✅ **Projeto 3** - Prazo de Entrega 1: 15-set (2,5 pt) | Prazo de Entrega 2: 17-set (1,5 pt)<br>
 - ⚠️ **Projeto 4** - Prazo de Entrega 1: 22-set (2,5 pt) | Prazo de Entrega 2: 24-set (1,5 pt)<br>
 
 #### | CONTEÚDOS PARA A PROVA
 ```
-Aguarde...
+REVISÃO DE OBJETOS NO JAVASCRIPT E INTRODUÇÃO AO POO
+CLASSES: CONSTRUTOR E THIS
+CLASSES: INSTANCIAS
+CLASSES: ACTION
+CLASSES: ABSTRAÇÃO
+CLASSES: ENCAPSULAMENTO
+CLASSES: GETTER
+CLASSES: SETTER
+CLASSES: VARIAVEL/METODO ESTATICO
+CLASSES: HERANÇA
+CLASSES: POLIMORFISMO
+CLASSES: FACTORY
 ```
 
 ### Gestão de Startup II
 - Projeto Pessoal: Continuação do desenvolvimento da empresa no Instagram, agora com mínimo de 20 posts e 100 seguidores. Além disso, o grupo deve apresentar um caderno de campo sobre o desenvolvimento do projeto, físico e personalizado, juntamente com a apresentação do produto que sendo apresentado no Instragram.
 Previsão para 21-set | Quantidade de Indivíduos: até 5 pessoas (5-10 min de apresentação)
 - Prova Bimestral: previsão para final de setembro à começo de outubro
-- ✅ **Projeto 1 - Planejamento de um Produto**<br>
-Prazo de Entrega 1: 30-ago (2,5 pt) | Prazo de Entrega 2: 31-ago (1,5 pt)
+- ✅ **Projeto 1** - Prazo de Entrega 1: 30-ago (2,5 pt) | Prazo de Entrega 2: 31-ago (1,5 pt)<br>
+- ⚠️ **Projeto 2** - Prazo de Entrega 1: 18-set (2,5 pt) | Prazo de Entrega 2: 20-set (1,5 pt)<br>
 
 #### | CONTEÚDOS PARA A PROVA
 ```
-Aguarde...
+JORNADA DO PRODUTO: DA IDEIA AO LANÇAMENTO
+PRODUTO X PROJETO: QUAL A DIFERENÇA
+PENSAR NO USUÁRIO: INTRODUÇÃO AO CUSTOMER-CENTRIC
+PAPEL DO PROGRAMADOR NO SUCESSO DO PRODUTO
+REUNIÕES AGEIS: DAILY, PLANNING, REVIEW, RETRO
+COMO PARTICIPAR DE SPRINTS E PLANNINGS
+VALIDAÇÃO COM USUARIO: TESTES E PROTOTIPAGEM
+MVP, MLP, MMP: COMO CONSTRUIR AOS POUCOS
 ```
 
 ✅ Projeto corrigido
