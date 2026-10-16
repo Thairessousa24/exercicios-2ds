@@ -1,9 +1,12 @@
+
 {
   "name": "projeto5-thairessousa24",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node servidor.js",
+    "dev": "node --watch --env-file=.env servidor.js",
     "test": "jest"
   },
   "keywords": [],
