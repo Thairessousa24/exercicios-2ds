@@ -1,0 +1,20 @@
+{
+  "name": "aula10",
+  "version": "1.0.0",
+  "description": "Ler dados da requisição com req.body, req.params e req.query. Entender o que é um middleware e a ordem em que eles rodam. Criar um middleware de erro e usar try/catch. Responder com os status corretos: 400, 404 e 500.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.1.4"
+  }
+}
