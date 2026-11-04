@@ -2,52 +2,56 @@
 
 ## 🎯 Objetivos da Aula
 
-- Ler dados da requisição com **`req.body`**, **`req.params`** e **`req.query`**.
-- Entender o que é um **middleware** e a ordem em que eles rodam.
-- Criar um **middleware de erro** e usar `try/catch`.
+- Ler dados da requisição com **`req.params`**, **`req.query`** e **`req.body`**.
+- Entender o que é um **middleware**.
+- Criar um **middleware de erro**.
 - Responder com os status corretos: **400**, **404** e **500**.
-- Enviar `params`, `query` e `body` pelo **Bruno** e testar os casos de erro.
+- Testar cada mudança no **Bruno**.
 
-> Até aqui nossas rotas sempre devolveram a mesma coisa. Agora elas vão **receber** dados — e lidar com o que acontece quando esses dados vêm errados.
+> Na aula 9 você criou a `loja.js` e aprendeu a testá-la no Bruno. Hoje vamos continuar essa API: ela vai buscar um produto, filtrar a lista, recusar dados errados e responder todo erro de um jeito organizado.
 
-# 📥 Os três lugares de onde vêm os dados
+# 🚀 Preparando a API
 
-| Objeto | De onde vem | Exemplo de requisição |
-| --- | --- | --- |
-| `req.params` | de um pedaço do caminho | `GET /produtos/7` |
-| `req.query` | depois do `?` na URL | `GET /produtos?preco=100` |
-| `req.body` | do corpo da requisição | `POST /produtos` com JSON |
+Pare o servidor da aula 9 com `Ctrl + C`. Depois, entre na pasta da aula 10, instale as dependências e copie a `loja.js`:
 
-## 1️⃣ req.params — dados no caminho
-
-Para capturar um pedaço variável do caminho, use `:` na declaração da rota:
-
-```jsx
-app.get("/produtos/:id", (req, res) => {
-    res.json({ id: req.params.id })
-})
+```bash
+cd 4-bimestre/orientacao-a-objetos/aula10
+npm install
+cp ../aula09/loja.js loja.js
 ```
 
-Pedindo `GET /produtos/7`, o `req.params` é:
-
-```jsx
-{ id: "7" }
-```
-
-⚠️ **Sempre texto.** `req.params.id` é `"7"`, não `7`. Para comparar com número, converta:
-
-```jsx
-const id = Number(req.params.id)
-```
-
-## 📌 Exemplo 1 — Buscando um item pelo id
+Agora dê um `id` para cada produto. Vamos precisar dele para buscar um produto específico:
 
 ```jsx
 const produtos = [
-    { id: 1, nome: "Teclado", preco: 150 },
-    { id: 2, nome: "Mouse", preco: 80 }
+    { id: 1, nome: "Mouse", preco: 80 },
+    { id: 2, nome: "Monitor", preco: 900 }
 ]
+```
 
+Suba o servidor e deixe o terminal aberto:
+
+```bash
+node --watch loja.js
+```
+
+📌 O `--watch` reinicia o servidor sempre que você salva o arquivo. No Bruno, continue usando a coleção `API da Loja`.
+
+# 📥 Parte 1 — Recebendo dados
+
+Quem usa a API pode mandar dados por três lugares:
+
+| No código | Onde o dado vem | Para que serve | Exemplo |
+| --- | --- | --- | --- |
+| `req.params` | no caminho da URL | dizer **qual** item você quer | `/produtos/1` |
+| `req.query` | depois do `?` na URL | filtrar, de forma **opcional** | `/produtos?precoMax=100` |
+| `req.body` | no corpo da requisição | **enviar** um registro | `{ "nome": "Teclado" }` |
+
+## 1️⃣ req.params: buscando um produto
+
+Adicione esta rota na `loja.js`, depois da rota `GET /produtos`:
+
+```jsx
 app.get("/produtos/:id", (req, res) => {
     const id = Number(req.params.id)
     const produto = produtos.find(p => p.id === id)
@@ -60,28 +64,25 @@ app.get("/produtos/:id", (req, res) => {
 })
 ```
 
-Duas coisas importantes:
+O que cada parte faz:
 
-- o `find` devolve `undefined` quando não acha — e aí a resposta é **404**;
-- o `return` antes do `res.status(404)` impede que o código continue e tente responder duas vezes.
+- `:id` é a parte variável do caminho. Em `/produtos/1`, o `req.params.id` é `"1"`.
+- `Number(...)` converte o texto em número, porque tudo que vem da URL chega como **texto**.
+- `find` procura o produto e devolve `undefined` quando não acha.
+- `return` encerra a função, para ela não tentar responder duas vezes.
 
-## 2️⃣ req.query — dados depois do `?`
+**Teste no Bruno:**
 
-A **query string** é a parte da URL depois do `?`, em pares `chave=valor` separados por `&`:
+| Requisição | Status | Resposta |
+| --- | --- | --- |
+| GET `http://localhost:3000/produtos/1` | 200 | o Mouse |
+| GET `http://localhost:3000/produtos/99` | 404 | `{ "erro": "Produto nao encontrado" }` |
 
-```
-GET /produtos?preco=100&nome=teclado
-```
+📌 Se preferir, escreva `/produtos/:id` na URL e preencha o `id` na aba **Params → Path**. O resultado é o mesmo.
 
-```jsx
-app.get("/produtos", (req, res) => {
-    console.log(req.query)   // { preco: "100", nome: "teclado" }
-})
-```
+## 2️⃣ req.query: filtrando a lista
 
-Serve para **filtrar, ordenar e paginar** — coisas opcionais. Se o cliente não mandar nada, `req.query` é um objeto vazio.
-
-## 📌 Exemplo 2 — Filtro opcional
+Troque a rota `GET /produtos` por esta:
 
 ```jsx
 app.get("/produtos", (req, res) => {
@@ -95,276 +96,269 @@ app.get("/produtos", (req, res) => {
 })
 ```
 
-| Requisição | Resposta |
-| --- | --- |
-| `GET /produtos` | todos os produtos |
-| `GET /produtos?precoMax=100` | só o Mouse |
+Se ninguém mandar o `precoMax`, a rota devolve a lista completa. É isso que torna o filtro opcional.
 
-📌 Diferença essencial: `params` é **obrigatório** (faz parte do caminho da rota); `query` é **opcional** (a rota funciona sem ele).
+Para mandar mais de um dado, separe com `&`: em `/produtos?precoMax=100&nome=Mouse`, o `req.query` tem o `precoMax` e o `nome`.
 
-## 3️⃣ req.body — dados no corpo
+**Teste no Bruno:**
 
-Aqui vem a pegadinha: por padrão, o Express **não** lê o corpo da requisição. `req.body` é `undefined`.
+| Requisição | Status | Resposta |
+| --- | --- | --- |
+| GET `http://localhost:3000/produtos` | 200 | todos os produtos |
+| GET `http://localhost:3000/produtos?precoMax=100` | 200 | só o Mouse |
 
-Para habilitar, uma linha:
+📌 Você pode escrever o filtro na URL ou preencher a aba **Params → Query**.
+
+## 3️⃣ req.body: você já usou
+
+A rota `POST /produtos` da aula 9 já lê o `req.body`. Quem permite isso é esta linha, que vem antes das rotas:
 
 ```jsx
 app.use(express.json())
 ```
 
-## 📌 Exemplo 3 — Recebendo JSON
+Sem ela, o Express não lê o JSON enviado na aba **Body**, e o `req.body` fica `undefined`.
+
+# 🧩 Parte 2 — Middleware
+
+**Middleware** é uma função que roda **antes** da rota. Pense em um porteiro: ele confere quem chegou e decide se a pessoa pode entrar.
+
+```
+requisição → middleware → rota → resposta
+```
+
+O middleware tem dois caminhos:
+
+| O que ele faz | Resultado |
+| --- | --- |
+| chama `next()` | está tudo certo, e a requisição segue para a rota |
+| responde com `res.status(...)` | achou um problema, e a requisição para ali |
+
+⚠️ Sem `next()` e sem resposta, o cliente fica esperando para sempre.
+
+O `express.json()` também é um middleware. Por isso ele vem antes das rotas: o Express segue a ordem em que o código foi escrito.
+
+## 4️⃣ Criando um middleware de validação
+
+Hoje a validação está dentro da rota `POST /produtos`. Vamos separar: o middleware **valida** e a rota **cria**.
+
+Adicione esta função antes das rotas:
+
+```jsx
+function validarProduto(req, res, next) {
+    if (!req.body.nome) {
+        return res.status(400).json({ erro: "O campo nome e obrigatorio" })
+    }
+
+    if (typeof req.body.preco !== "number") {
+        return res.status(400).json({ erro: "O campo preco deve ser um numero" })
+    }
+
+    next()
+}
+```
+
+Agora troque a rota `POST /produtos`. Repare no `validarProduto` antes da função da rota:
+
+```jsx
+app.post("/produtos", validarProduto, (req, res) => {
+    produtos.push(req.body)
+    res.status(201).json(req.body)
+})
+```
+
+**Teste no Bruno**, sempre com POST em `http://localhost:3000/produtos`:
+
+| Body | Status | Resposta |
+| --- | --- | --- |
+| `{ "nome": "Teclado", "preco": 150 }` | 201 | o produto criado |
+| `{ "preco": 150 }` | 400 | `{ "erro": "O campo nome e obrigatorio" }` |
+| `{ "nome": "Teclado", "preco": "caro" }` | 400 | `{ "erro": "O campo preco deve ser um numero" }` |
+
+# 🚨 Parte 3 — Tratando erros em um só lugar
+
+Teste GET em `http://localhost:3000/qualquer-coisa`. A resposta é uma página HTML, e não JSON. Em uma API, todo erro deve seguir o mesmo formato.
+
+## 5️⃣ Rota inexistente e middleware de erro
+
+Adicione estes dois blocos **depois de todas as rotas** e antes do `app.listen`:
+
+```jsx
+// rota nao encontrada
+app.use((req, res) => {
+    res.status(404).json({ erro: "Rota nao encontrada" })
+})
+
+// middleware de erro: sempre o ultimo
+app.use((erro, req, res, next) => {
+    res.status(erro.status || 500).json({ erro: erro.message })
+})
+```
+
+O segundo bloco é o **middleware de erro**. O Express o reconhece porque ele tem **quatro** parâmetros, e o primeiro é o erro. O `erro.status || 500` usa o status do erro e, se não houver um, responde 500.
+
+## 6️⃣ Enviando o erro com `next(erro)`
+
+Agora a rota de busca não precisa mais responder o erro sozinha. Ela cria o erro e entrega ao middleware:
+
+```jsx
+app.get("/produtos/:id", (req, res, next) => {
+    const id = Number(req.params.id)
+    const produto = produtos.find(p => p.id === id)
+
+    if (!produto) {
+        const erro = new Error("Produto nao encontrado")
+        erro.status = 404
+        return next(erro)
+    }
+
+    res.json(produto)
+})
+```
+
+| Chamada | O que acontece |
+| --- | --- |
+| `next()` | segue para o próximo passo |
+| `next(erro)` | pula direto para o middleware de erro |
+
+**Teste no Bruno:**
+
+| Requisição | Status | Resposta |
+| --- | --- | --- |
+| GET `/produtos/99` | 404 | `{ "erro": "Produto nao encontrado" }` |
+| GET `/qualquer-coisa` | 404 | `{ "erro": "Rota nao encontrada" }` |
+| POST `/produtos` com o corpo `{ "nome": "Teclado", }` | 400 | um JSON com a mensagem do erro |
+
+O último caso é o JSON quebrado da aula 9. Antes ele devolvia uma página HTML; agora quem responde é o seu middleware de erro.
+
+## 🧯 E o try/catch?
+
+Quando um trecho de código pode quebrar, envolva com `try/catch` e entregue o erro com `next(erro)`:
+
+```jsx
+app.get("/exemplo", (req, res, next) => {
+    try {
+        const dados = JSON.parse("texto que nao e JSON")
+        res.json(dados)
+    } catch (erro) {
+        next(erro)
+    }
+})
+```
+
+Esse erro não tem `status`, então o middleware responde **500**. Vamos usar o `try/catch` de novo quando trabalharmos com arquivos.
+
+# ✅ Como ficou a loja.js
+
+Compare com o seu arquivo:
 
 ```jsx
 const express = require("express")
 
 const app = express()
+app.use(express.json())
 
-app.use(express.json())        // ← sem esta linha, req.body e undefined
+const produtos = [
+    { id: 1, nome: "Mouse", preco: 80 },
+    { id: 2, nome: "Monitor", preco: 900 }
+]
 
-app.post("/produtos", (req, res) => {
-    const { nome, preco } = req.body
-
-    res.status(201).json({ mensagem: `Produto ${nome} criado`, preco })
-})
-```
-
-⚠️ O `app.use(express.json())` precisa vir **antes** das rotas. Veja por quê na próxima seção.
-
-## 🔎 Onde cada dado aparece no Bruno
-
-Na aula 9 você aprendeu a usar o Bruno. Cada um dos três lugares tem o seu campo na ferramenta:
-
-| No código | No Bruno | Exemplo |
-| --- | --- | --- |
-| `req.params` | escreva `:id` na URL e preencha **Params → Path** | URL `http://localhost:3000/produtos/:id`, com `id` = `7` |
-| `req.query` | aba **Params → Query** (a URL se atualiza sozinha) | `precoMax` = `100` |
-| `req.body` | aba **Body**, com o tipo **JSON** | `{ "nome": "Teclado", "preco": 150 }` |
-
-📌 Também dá para escrever direto na URL, como `/produtos/7` ou `/produtos?precoMax=100`. O resultado é o mesmo.
-
-# 🧩 Middleware
-
-**Middleware** é uma função que roda **no meio do caminho**, entre a requisição chegar e a rota responder.
-
-```
-requisição → middleware 1 → middleware 2 → rota → resposta
-```
-
-A assinatura tem **três** parâmetros:
-
-```jsx
-function meuMiddleware(req, res, next) {
-    // faz algo
-    next()
-}
-```
-
-| Parâmetro | O que é |
-| --- | --- |
-| `req` | a requisição (pode ser modificada) |
-| `res` | a resposta |
-| `next` | função que passa para o próximo da fila |
-
-📌 O `next()` é obrigatório. Sem ele, a requisição **para ali** e nunca chega à rota — o cliente fica esperando para sempre.
-
-## 📌 Exemplo 4 — Middleware de log
-
-```jsx
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`)
-    next()
-})
-```
-
-Esse middleware roda em **toda** requisição, qualquer rota.
-
-## 📌 Exemplo 5 — Middleware em uma rota só
-
-Em vez de registrar com `app.use`, passe a função como segundo argumento:
-
-```jsx
 function validarProduto(req, res, next) {
-    const { nome, preco } = req.body
-
-    if (!nome) {
+    if (!req.body.nome) {
         return res.status(400).json({ erro: "O campo nome e obrigatorio" })
     }
 
-    if (typeof preco !== "number") {
+    if (typeof req.body.preco !== "number") {
         return res.status(400).json({ erro: "O campo preco deve ser um numero" })
     }
 
     next()
 }
 
-app.post("/produtos", validarProduto, (req, res) => {
-    res.status(201).json({ mensagem: "Produto criado" })
-})
-```
+app.get("/produtos", (req, res) => {
+    const precoMax = Number(req.query.precoMax)
 
-Agora a rota só roda se os dados estiverem válidos. Ela cuida de **criar**; o middleware cuida de **validar**. Cada função com uma responsabilidade.
-
-Um middleware tem duas saídas possíveis:
-
-| Saída | Significado |
-| --- | --- |
-| chama `next()` | está tudo bem, siga |
-| responde (`res.status(...)`) | problema encontrado, pare aqui |
-
-⚠️ Nunca as duas. Responder **e** chamar `next()` gera o erro `Cannot set headers after they are sent`.
-
-## 🔢 A ordem importa
-
-O Express executa na ordem em que você registrou. É por isso que:
-
-```jsx
-app.use(express.json())       // 1º — prepara o req.body
-app.post("/produtos", ...)    // 2º — usa o req.body
-```
-
-Invertido, a rota rodaria antes do `express.json()` e `req.body` estaria `undefined`.
-
-> **Middleware é uma fila, não um conjunto. Pense sempre em "quem roda antes".**
-
-# 🚨 Tratamento de erros
-
-## 🧯 try/catch
-
-Quando o código dentro de uma rota pode quebrar, envolva em `try/catch`:
-
-```jsx
-app.get("/produtos/:id", (req, res) => {
-    try {
-        const id = Number(req.params.id)
-
-        if (Number.isNaN(id)) {
-            throw new Error("Id invalido")
-        }
-
-        res.json({ id })
-    } catch (erro) {
-        res.status(500).json({ erro: erro.message })
+    if (!precoMax) {
+        return res.json(produtos)
     }
+
+    res.json(produtos.filter(p => p.preco <= precoMax))
 })
-```
-
-Funciona — mas repetir esse `try/catch` em vinte rotas é repetir vinte vezes a mesma coisa.
-
-## 🎯 Middleware de erro
-
-O Express tem um tipo especial de middleware, com **quatro** parâmetros. O primeiro é o erro:
-
-```jsx
-function tratarErro(erro, req, res, next) {
-    res.status(500).json({ erro: erro.message })
-}
-```
-
-Duas regras:
-
-1. **Quatro parâmetros.** É assim que o Express reconhece um middleware de erro. Com três, ele é tratado como middleware comum.
-2. **Registrado por último**, depois de todas as rotas.
-
-## 📌 Exemplo 6 — Estrutura completa
-
-```jsx
-const express = require("express")
-
-const app = express()
-
-app.use(express.json())
 
 app.get("/produtos/:id", (req, res, next) => {
-    try {
-        const id = Number(req.params.id)
+    const id = Number(req.params.id)
+    const produto = produtos.find(p => p.id === id)
 
-        if (Number.isNaN(id)) {
-            const erro = new Error("Id invalido")
-            erro.status = 400
-            throw erro
-        }
-
-        const produto = produtos.find(p => p.id === id)
-
-        if (!produto) {
-            const erro = new Error("Produto nao encontrado")
-            erro.status = 404
-            throw erro
-        }
-
-        res.json(produto)
-    } catch (erro) {
-        next(erro)                      // ← manda para o middleware de erro
+    if (!produto) {
+        const erro = new Error("Produto nao encontrado")
+        erro.status = 404
+        return next(erro)
     }
+
+    res.json(produto)
 })
 
-// rota nao encontrada — depois de todas as rotas
+app.post("/produtos", validarProduto, (req, res) => {
+    produtos.push(req.body)
+    res.status(201).json(req.body)
+})
+
+// rota nao encontrada
 app.use((req, res) => {
     res.status(404).json({ erro: "Rota nao encontrada" })
 })
 
-// middleware de erro — sempre o ultimo
+// middleware de erro: sempre o ultimo
 app.use((erro, req, res, next) => {
     res.status(erro.status || 500).json({ erro: erro.message })
 })
 
-module.exports = app
+app.listen(3000, () => {
+    console.log("API da Loja em http://localhost:3000")
+})
 ```
 
-O detalhe que faz tudo funcionar: **`next(erro)`**.
-
-| Chamada | Efeito |
-| --- | --- |
-| `next()` | vai para o próximo middleware normal |
-| `next(erro)` | **pula** direto para o middleware de erro |
-
-E o `erro.status || 500` permite que cada erro escolha seu código, com 500 como padrão para o que não foi previsto.
-
-## 📋 Resumo dos status
+# 📋 Resumo dos status
 
 | Status | Quando usar | Exemplo |
 | --- | --- | --- |
-| 200 | busca deu certo | listou produtos |
-| 201 | criou um registro | cadastrou produto |
+| 200 | a busca deu certo | listou os produtos |
+| 201 | criou um registro | cadastrou um produto |
 | **400** | o cliente mandou dado inválido | faltou o campo `nome` |
-| **404** | não existe o que foi pedido | id 99 não existe |
+| **404** | não existe o que foi pedido | o id 99 não existe |
 | **500** | o servidor quebrou | erro não previsto no código |
 
-> **Regra de ouro: 4xx é culpa de quem pediu, 5xx é culpa de quem respondeu.** Se faltou um campo obrigatório, é 400 — nunca 500.
+> **Regra de ouro: 4xx é culpa de quem pediu, 5xx é culpa de quem respondeu.** Se faltou um campo obrigatório, é 400, nunca 500.
 
 # 📖 Conceitos importantes
 
 | Conceito | Significado |
 | --- | --- |
-| `req.params` | dados vindos do caminho (`/produtos/:id`) |
-| `req.query` | dados vindos depois do `?` |
-| `req.body` | dados vindos do corpo |
-| `express.json()` | middleware que habilita o `req.body` |
-| Middleware | função que roda antes da rota, com `(req, res, next)` |
-| `next()` | passa para o próximo da fila |
+| `req.params` | dado que vem no caminho da URL |
+| `req.query` | dado opcional que vem depois do `?` |
+| `req.body` | dado que vem no corpo da requisição |
+| `express.json()` | middleware que permite ler o `req.body` |
+| Middleware | função que roda antes da rota |
+| `next()` | segue para o próximo passo |
 | `next(erro)` | pula para o middleware de erro |
 | Middleware de erro | middleware com 4 parâmetros, registrado por último |
 
 # ⚠️ Erros comuns
 
-### ❌ Esquecer o `express.json()`
+### ❌ Comparar o id sem converter
 
 ```jsx
-app.post("/produtos", (req, res) => {
-    console.log(req.body.nome)   // TypeError: cannot read properties of undefined
-})
+produtos.find(p => p.id === req.params.id)           // "1" === 1 e falso
+produtos.find(p => p.id === Number(req.params.id))   // ✅
 ```
-
-Correto: `app.use(express.json())` **antes** das rotas.
 
 ### ❌ Esquecer o `next()` no middleware
 
-```jsx
-app.use((req, res, next) => {
-    console.log("chegou")
-    // sem next() — a requisicao morre aqui
-})
-```
+O cliente fica esperando e a resposta nunca chega.
+
+### ❌ Colocar `express.json()` depois das rotas
+
+As rotas rodam antes dele, e o `req.body` fica `undefined`.
 
 ### ❌ Middleware de erro com 3 parâmetros
 
@@ -375,18 +369,11 @@ app.use((erro, req, res, next) => { ... })  // ✅ middleware de erro
 
 ### ❌ Registrar o middleware de erro antes das rotas
 
-Ele nunca é chamado. Sempre o **último** `app.use`.
-
-### ❌ Comparar `params` sem converter
-
-```jsx
-produtos.find(p => p.id === req.params.id)   // "7" === 7 e falso
-produtos.find(p => p.id === Number(req.params.id))   // ✅
-```
+Ele nunca é chamado. Deixe sempre como o **último** `app.use`.
 
 ### ❌ Responder 500 para erro do cliente
 
-Faltou um campo obrigatório? É **400**. Usar 500 esconde que o problema está na requisição, e quem for consumir sua API vai procurar o bug no lugar errado.
+Faltou um campo obrigatório? É **400**. O 500 faria parecer que o problema está no servidor.
 
 Fim da aula!
 
