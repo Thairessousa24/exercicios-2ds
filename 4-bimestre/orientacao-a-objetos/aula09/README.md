@@ -144,7 +144,6 @@ Testar uma rota e perder a requisição é desperdício. Uma **coleção** é um
 📁 API da Loja
 ├── 📁 Produtos
 │   ├── GET    Listar produtos        /produtos
-│   ├── GET    Total de produtos      /produtos/total
 │   ├── POST   Criar produto          /produtos
 │   ├── PUT    Atualizar produto      /produtos/1
 │   └── DELETE Remover produto        /produtos/1
@@ -202,7 +201,7 @@ cd 4-bimestre/orientacao-a-objetos/aula09
 npm install
 ```
 
-Crie um arquivo chamado `loja.js` e cole o código abaixo. Ele é só um exemplo para treinar a ferramenta — algumas partes você vai entender melhor na aula 10.
+Crie um arquivo chamado `loja.js` e digite o código abaixo. Ele é só um exemplo para treinar a ferramenta, e algumas partes você vai entender melhor na aula 10.
 
 ```jsx
 const express = require("express")
@@ -211,51 +210,21 @@ const app = express()
 app.use(express.json())
 
 const produtos = [
-    { id: 1, nome: "Mouse", preco: 80 },
-    { id: 2, nome: "Monitor", preco: 900 }
+    { nome: "Mouse", preco: 80 },
+    { nome: "Monitor", preco: 900 }
 ]
-let proximoId = 3
 
 app.get("/produtos", (req, res) => {
     res.json(produtos)
 })
 
-app.get("/produtos/total", (req, res) => {
-    res.json({ total: produtos.length })
-})
-
 app.post("/produtos", (req, res) => {
-    const { nome, preco } = req.body || {}
-
-    if (!nome) {
+    if (!req.body.nome) {
         return res.status(400).json({ erro: "O campo nome e obrigatorio" })
     }
 
-    const produto = { id: proximoId++, nome, preco }
-    produtos.push(produto)
-    res.status(201).json(produto)
-})
-
-app.put("/produtos/:id", (req, res) => {
-    const produto = produtos.find(p => p.id === Number(req.params.id))
-
-    if (!produto) {
-        return res.status(404).json({ erro: "Produto nao encontrado" })
-    }
-
-    Object.assign(produto, req.body)
-    res.json(produto)
-})
-
-app.delete("/produtos/:id", (req, res) => {
-    const indice = produtos.findIndex(p => p.id === Number(req.params.id))
-
-    if (indice === -1) {
-        return res.status(404).json({ erro: "Produto nao encontrado" })
-    }
-
-    produtos.splice(indice, 1)
-    res.json({ mensagem: "Produto removido" })
+    produtos.push(req.body)
+    res.status(201).json(req.body)
 })
 
 app.listen(3000, () => {
@@ -294,8 +263,8 @@ O resultado esperado é o status **200** e este corpo:
 
 ```json
 [
-  { "id": 1, "nome": "Mouse", "preco": 80 },
-  { "id": 2, "nome": "Monitor", "preco": 900 }
+  { "nome": "Mouse", "preco": 80 },
+  { "nome": "Monitor", "preco": 900 }
 ]
 ```
 
@@ -314,21 +283,13 @@ O resultado esperado é o status **200** e este corpo:
 
 4. Salve com `Ctrl + S` e envie com `Ctrl + Enter`.
 
-O resultado esperado é o status **201** com o produto criado, já com o `id` 3. Execute de novo a requisição `Listar produtos`: agora ela devolve três itens.
+O resultado esperado é o status **201** com o produto criado. Execute de novo a requisição `Listar produtos`: agora ela devolve três itens.
 
 📌 Sempre que alterar uma requisição, salve com `Ctrl + S`. É assim que a mudança fica na coleção.
 
-## 6️⃣ Completando a coleção
+📌 PUT e DELETE funcionam da mesma forma: basta trocar o método. A `loja.js` não tem essas rotas, para o código ficar curto.
 
-Crie as outras requisições da mesma forma:
-
-| Nome | Método | URL | Body | Status esperado |
-| --- | --- | --- | --- | --- |
-| Total de produtos | GET | `/produtos/total` | — | 200 |
-| Atualizar produto | PUT | `/produtos/1` | `{ "preco": 99 }` | 200 |
-| Remover produto | DELETE | `/produtos/1` | — | 200 |
-
-## 7️⃣ Errando de propósito
+## 6️⃣ Errando de propósito
 
 Testar só o caminho feliz não basta. Provoque cada erro abaixo e veja a resposta:
 
@@ -336,13 +297,13 @@ Testar só o caminho feliz não basta. Provoque cada erro abaixo e veja a respos
 | --- | --- | --- |
 | POST com o corpo `{ "preco": 150 }` | 400 | `{ "erro": "O campo nome e obrigatorio" }` |
 | POST com o corpo `{ nome: 'Teclado' }` | 400 | uma página HTML com `SyntaxError` |
-| PUT em `/produtos/99` | 404 | `{ "erro": "Produto nao encontrado" }` |
 | GET em `/produto` (sem o `s`) | 404 | uma página HTML com `Cannot GET /produto` |
+| PUT em `/produtos` | 404 | uma página HTML com `Cannot PUT /produtos` |
 | Parar o servidor (`Ctrl + C`) e enviar | não tem | erro de conexão, sem status |
 
 Salve a primeira como `Criar produto sem nome`. Ela vai para a coleção porque prova que a validação funciona. Depois, suba o servidor de novo.
 
-## 8️⃣ Usando a variável `base_url`
+## 7️⃣ Usando a variável `base_url`
 
 1. No canto superior direito, abra a lista que mostra **No Environment**.
 2. Clique em **Configure** e crie um ambiente chamado `local`.
@@ -352,7 +313,7 @@ Salve a primeira como `Criar produto sem nome`. Ela vai para a coleção porque 
 
 ⚠️ Se a URL com `{{base_url}}` não funcionar, confira se o ambiente **local** está selecionado.
 
-## 9️⃣ Criando testes
+## 8️⃣ Criando testes
 
 Até aqui, **você** olha a resposta e decide se está certa. Um **teste** faz essa conferência sozinho, toda vez que a requisição é enviada.
 
@@ -380,12 +341,12 @@ Agora faça o mesmo em `Criar produto sem nome`:
 Para verificações mais detalhadas, use a aba **Tests**. A ideia é parecida com a do Jest. Em `Criar produto`, escreva:
 
 ```jsx
-test("Devolve o produto com id", () => {
+test("Devolve o produto criado", () => {
     const produto = res.getBody()
 
     expect(res.getStatus()).to.equal(201)
-    expect(produto).to.have.property("id")
     expect(produto.nome).to.equal("Teclado")
+    expect(produto.preco).to.equal(150)
 })
 ```
 
@@ -396,15 +357,12 @@ test("Devolve o produto com id", () => {
 
 💡 Quer ver um teste falhando? Troque `201` por `200`, envie, veja a reprovação e desfaça a troca.
 
-## 🔟 Rodando a coleção inteira
+## 9️⃣ Rodando a coleção inteira
 
-1. Reinicie o servidor (`Ctrl + C` e `node --watch loja.js`), para os dados voltarem ao início.
-2. Clique com o botão direito na coleção e escolha **Run Collection**.
-3. Confirme em **Run Collection**.
+1. Clique com o botão direito na coleção e escolha **Run Collection**.
+2. Confirme em **Run Collection**.
 
 Todas as requisições rodam em sequência, e no final aparece quantas passaram.
-
-⚠️ Os produtos ficam na memória, e a coleção remove o produto 1. Rodando de novo sem reiniciar, `Atualizar produto` e `Remover produto` dão 404 e seus testes falham. Nesse caso os testes estão certos: o produto realmente não existe mais. Reinicie o servidor antes de cada execução.
 
 # 🗂️ Descrevendo a coleção em código
 
