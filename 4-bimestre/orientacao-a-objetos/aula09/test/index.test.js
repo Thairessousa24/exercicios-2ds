@@ -40,7 +40,7 @@ test("GET /tarefas deve devolver as duas tarefas", async () => {
 
     expect(res.body).toEqual([
         { id: 1, titulo: "Estudar Express", feita: false },
-        { id: 2, titulo: "Instalar o Insomnia", feita: true }
+        { id: 2, titulo: "Instalar o Bruno", feita: true }
     ])
 })
 

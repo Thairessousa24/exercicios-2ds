@@ -125,6 +125,8 @@ ferragem-orcamentos
 ┃ ┗ validarOrcamento.js    ← middleware de validacao
 ┣ routes
 ┃ ┗ orcamentos.js            ← rotas de orcamentos
+┣ colecao                      ← coleção do Bruno (item de entrega)
+┣ servidor.js                  ← sobe a API para testar no Bruno
 ┣ test
 ┃ ┗ orcamentos.test.js
 ┣ package.json
@@ -159,3 +161,49 @@ O router deve ser montado sob o prefixo `/orcamentos`, então os caminhos declar
 | últimos 10 min | rota inexistente e middleware de erro (RF04) |
 
 O estudante deverá decidir como organizar as funções dentro dos arquivos.
+
+# 🧪 TESTANDO NO BRUNO
+
+Além de passar no `npm test`, sua API precisa ser testada no **Bruno**. Se ainda não instalou a extensão, siga a seção **Mão na massa** da aula 9.
+
+⚠️ **A coleção do Bruno é item de entrega.** A correção automática reprova o projeto se a pasta `colecao` não for enviada, mesmo com o `npm test` passando. O conteúdo da coleção é conferido pelo professor.
+
+**1.** Crie o arquivo `servidor.js` na pasta do projeto. Ele é um arquivo a mais, e o `index.js` continua sem `app.listen()`:
+
+```jsx
+const app = require("./index")
+
+const porta = Number(process.env.PORT) || 3000
+
+app.listen(porta, () => {
+    console.log(`Servidor na porta ${porta}`)
+})
+```
+
+**2.** Suba o servidor e deixe o terminal aberto:
+
+```bash
+node --watch servidor.js
+```
+
+**3.** Crie uma coleção com o nome `colecao`, com **Location** na pasta do projeto, e um ambiente `local`, com `base_url` igual a `http://localhost:3000`.
+
+**4.** Crie uma requisição para cada linha abaixo, usando `{{base_url}}` no começo da URL. Em cada uma, adicione na aba **Assert** a linha `res.status`, `eq` e o status esperado.
+
+| Requisito | Método | URL | Dado enviado | Status |
+| --- | --- | --- | --- | --- |
+| RF01 | GET | `/orcamentos` | — | 200 |
+| RF01 | GET | `/orcamentos` | **Params → Query**: um filtro da tabela do RF01 | 200 |
+| RF02 | GET | `/orcamentos/:id` | **Params → Path**: `id` = `2` | 200 |
+| RF02 | GET | `/orcamentos/:id` | **Params → Path**: `id` = `99` | 404 |
+| RF03 | POST | `/orcamentos` | **Body**: o exemplo válido do RF03 | 201 |
+| RF03 | POST | `/orcamentos` | **Body**: uma requisição para cada erro da tabela do RF03 | 400 |
+| RF04 | GET | `/qualquer-coisa` | — | 404 |
+
+⚠️ No Body, o JSON precisa de aspas duplas nas chaves. O exemplo do RF03 está resumido, então escreva `{ "campo": "valor" }`, e não `{ campo: "valor" }`.
+
+Nas requisições de erro, adicione também ao **Assert** a linha `res.body.erro`, `eq` e a mensagem esperada.
+
+**5.** Reinicie o servidor e rode tudo com **Run Collection**. Todas as requisições devem passar.
+
+**6.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela, cada uma com seu **Assert**.

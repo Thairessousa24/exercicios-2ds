@@ -1,4 +1,4 @@
-# 🎯 Aula 9 — Testando API com Postman ou Insomnia
+# 🎯 Aula 9 — Testando API com Ferramentas
 
 ## 🎯 Objetivos da Aula
 
@@ -6,6 +6,7 @@
 - Montar uma requisição com **método**, **caminho**, **headers** e **body**.
 - Ler uma resposta: **status**, **headers** e **corpo**.
 - Organizar requisições em uma **coleção**.
+- Usar o **Bruno** no VS Code para enviar requisições e criar **testes** para a API.
 
 # 🤔 Por que preciso de uma ferramenta?
 
@@ -20,7 +21,7 @@ Para testar uma rota `POST /produtos` que recebe JSON no corpo, o navegador não
 | headers automáticos | você define cada header |
 | não guarda o que você testou | salva tudo em coleções |
 
-📌 Postman e Insomnia fazem a mesma coisa, com telas parecidas. O que você aprender em um serve no outro — use o que preferir.
+📌 Postman e Insomnia fazem a mesma coisa, com telas parecidas, e são os nomes que você vai encontrar no mercado. Na prática desta aula vamos usar o **Bruno**, que é o mesmo tipo de ferramenta, mas funciona dentro do VS Code e não pede conta. O que você aprender em um serve nos outros.
 
 # 🧩 Anatomia de uma requisição
 
@@ -83,7 +84,7 @@ O que vamos usar neste bimestre:
 Content-Type: application/json
 ```
 
-📌 Sem esse header, o Express **não** entende o corpo e `req.body` vem vazio — é o erro número um de quem está começando. Tanto o Postman quanto o Insomnia adicionam esse header automaticamente quando você escolhe o tipo de corpo "JSON", mas vale conferir.
+📌 Sem esse header, o Express **não** entende o corpo e `req.body` vem `undefined` — é o erro número um de quem está começando. Postman, Insomnia e Bruno adicionam esse header automaticamente quando você escolhe o tipo de corpo "JSON", mas vale conferir.
 
 ## 4️⃣ Body
 
@@ -133,7 +134,7 @@ O que olhar, em ordem:
 | 500 | a rota existe mas o código quebrou — olhe o terminal do servidor |
 | *não conecta* | o servidor não está rodando, ou a porta está errada |
 
-📌 O último caso não é um status: é a ferramenta dizendo que não achou ninguém atendendo. Confira se o `npm run dev` está de pé.
+📌 O último caso não é um status: é a ferramenta dizendo que não achou ninguém atendendo. Confira se o servidor está rodando no terminal.
 
 # 📁 Coleções
 
@@ -174,6 +175,237 @@ você cria a variável `base_url` e escreve:
 
 Assim, mudar a porta ou publicar a API exige alterar **um** valor, não as 12 requisições.
 
+# 🛠️ Mão na massa: testando com o Bruno
+
+Agora vamos fazer tudo isso de verdade. O **Bruno** é um cliente HTTP gratuito e de código aberto, com extensão para o VS Code.
+
+| Por que o Bruno nesta aula? | |
+| --- | --- |
+| Sem conta | instalou, já pode usar |
+| Dentro do VS Code | a API e os testes ficam na mesma janela |
+| Funciona no Codespaces | o `localhost` é o mesmo em que sua API está rodando |
+| Coleção em arquivos | fica na pasta do projeto e vai junto no `git push` |
+
+## 1️⃣ Instalando a extensão
+
+1. Abra a aba **Extensões** do VS Code (`Ctrl + Shift + X`).
+2. Pesquise por **Bruno**.
+3. Confira se o publicador é **bruno-api-client** e clique em **Install**.
+4. O ícone do Bruno aparece na barra lateral esquerda.
+
+## 2️⃣ Subindo uma API para testar
+
+Precisamos de uma API rodando. No terminal, entre na pasta da aula e instale as dependências:
+
+```bash
+cd 4-bimestre/orientacao-a-objetos/aula09
+npm install
+```
+
+Crie um arquivo chamado `loja.js` e cole o código abaixo. Ele é só um exemplo para treinar a ferramenta — algumas partes você vai entender melhor na aula 10.
+
+```jsx
+const express = require("express")
+
+const app = express()
+app.use(express.json())
+
+const produtos = [
+    { id: 1, nome: "Mouse", preco: 80 },
+    { id: 2, nome: "Monitor", preco: 900 }
+]
+let proximoId = 3
+
+app.get("/produtos", (req, res) => {
+    res.json(produtos)
+})
+
+app.get("/produtos/total", (req, res) => {
+    res.json({ total: produtos.length })
+})
+
+app.post("/produtos", (req, res) => {
+    const { nome, preco } = req.body || {}
+
+    if (!nome) {
+        return res.status(400).json({ erro: "O campo nome e obrigatorio" })
+    }
+
+    const produto = { id: proximoId++, nome, preco }
+    produtos.push(produto)
+    res.status(201).json(produto)
+})
+
+app.put("/produtos/:id", (req, res) => {
+    const produto = produtos.find(p => p.id === Number(req.params.id))
+
+    if (!produto) {
+        return res.status(404).json({ erro: "Produto nao encontrado" })
+    }
+
+    Object.assign(produto, req.body)
+    res.json(produto)
+})
+
+app.delete("/produtos/:id", (req, res) => {
+    const indice = produtos.findIndex(p => p.id === Number(req.params.id))
+
+    if (indice === -1) {
+        return res.status(404).json({ erro: "Produto nao encontrado" })
+    }
+
+    produtos.splice(indice, 1)
+    res.json({ mensagem: "Produto removido" })
+})
+
+app.listen(3000, () => {
+    console.log("API da Loja em http://localhost:3000")
+})
+```
+
+Suba o servidor e **deixe esse terminal aberto**:
+
+```bash
+node --watch loja.js
+```
+
+Deve aparecer `API da Loja em http://localhost:3000`.
+
+## 3️⃣ Criando a coleção
+
+1. Clique no ícone do **Bruno** na barra lateral.
+2. Clique em **Create Collection**.
+3. Em **Collection Name**, escreva `API da Loja`.
+4. Em **Location**, escolha a pasta `aula09`.
+5. Confirme em **Create Collection**.
+
+A coleção aparece na lateral, e uma pasta com os arquivos dela é criada dentro de `aula09`.
+
+## 4️⃣ Sua primeira requisição: GET
+
+1. Clique com o botão direito na coleção e escolha **New Request**.
+2. Em **Request Type**, deixe **HTTP**.
+3. Dê o nome `Listar produtos`.
+4. Deixe o método **GET** e digite a URL `http://localhost:3000/produtos`.
+5. Confirme a criação.
+6. Clique na seta ao lado da URL ou aperte `Ctrl + Enter`.
+
+O resultado esperado é o status **200** e este corpo:
+
+```json
+[
+  { "id": 1, "nome": "Mouse", "preco": 80 },
+  { "id": 2, "nome": "Monitor", "preco": 900 }
+]
+```
+
+## 5️⃣ Enviando dados: POST
+
+1. Crie outra requisição chamada `Criar produto`, com o método **POST** e a URL `http://localhost:3000/produtos`.
+2. Abra a aba **Body** e troque **No Body** por **JSON**.
+3. Cole o corpo:
+
+```json
+{
+  "nome": "Teclado",
+  "preco": 150
+}
+```
+
+4. Salve com `Ctrl + S` e envie com `Ctrl + Enter`.
+
+O resultado esperado é o status **201** com o produto criado, já com o `id` 3. Execute de novo a requisição `Listar produtos`: agora ela devolve três itens.
+
+📌 Sempre que alterar uma requisição, salve com `Ctrl + S`. É assim que a mudança fica na coleção.
+
+## 6️⃣ Completando a coleção
+
+Crie as outras requisições da mesma forma:
+
+| Nome | Método | URL | Body | Status esperado |
+| --- | --- | --- | --- | --- |
+| Total de produtos | GET | `/produtos/total` | — | 200 |
+| Atualizar produto | PUT | `/produtos/1` | `{ "preco": 99 }` | 200 |
+| Remover produto | DELETE | `/produtos/1` | — | 200 |
+
+## 7️⃣ Errando de propósito
+
+Testar só o caminho feliz não basta. Provoque cada erro abaixo e veja a resposta:
+
+| O que fazer | Status | O que aparece |
+| --- | --- | --- |
+| POST com o corpo `{ "preco": 150 }` | 400 | `{ "erro": "O campo nome e obrigatorio" }` |
+| POST com o corpo `{ nome: 'Teclado' }` | 400 | uma página HTML com `SyntaxError` |
+| PUT em `/produtos/99` | 404 | `{ "erro": "Produto nao encontrado" }` |
+| GET em `/produto` (sem o `s`) | 404 | uma página HTML com `Cannot GET /produto` |
+| Parar o servidor (`Ctrl + C`) e enviar | não tem | erro de conexão, sem status |
+
+Salve a primeira como `Criar produto sem nome`. Ela vai para a coleção porque prova que a validação funciona. Depois, suba o servidor de novo.
+
+## 8️⃣ Usando a variável `base_url`
+
+1. No canto superior direito, abra a lista que mostra **No Environment**.
+2. Clique em **Configure** e crie um ambiente chamado `local`.
+3. Adicione a variável `base_url` com o valor `http://localhost:3000` e salve.
+4. Volte à lista e selecione o ambiente **local**.
+5. Nas requisições, troque o começo da URL: `{{base_url}}/produtos`.
+
+⚠️ Se a URL com `{{base_url}}` não funcionar, confira se o ambiente **local** está selecionado.
+
+## 9️⃣ Criando testes
+
+Até aqui, **você** olha a resposta e decide se está certa. Um **teste** faz essa conferência sozinho, toda vez que a requisição é enviada.
+
+### Aba Assert: testes sem código
+
+Abra `Listar produtos`, vá na aba **Assert** e preencha uma linha para cada verificação:
+
+| Expr | Operador | Valor | O que confere |
+| --- | --- | --- | --- |
+| `res.status` | `eq` | `200` | o status é 200 |
+| `res.body` | `isArray` | | o corpo é uma lista |
+| `res.responseTime` | `lt` | `500` | respondeu em menos de 500 ms |
+
+Salve, envie e abra a aba de testes da resposta: cada linha aparece como aprovada ou reprovada.
+
+Agora faça o mesmo em `Criar produto sem nome`:
+
+| Expr | Operador | Valor |
+| --- | --- | --- |
+| `res.status` | `eq` | `400` |
+| `res.body.erro` | `eq` | `O campo nome e obrigatorio` |
+
+### Aba Tests: testes com JavaScript
+
+Para verificações mais detalhadas, use a aba **Tests**. A ideia é parecida com a do Jest. Em `Criar produto`, escreva:
+
+```jsx
+test("Devolve o produto com id", () => {
+    const produto = res.getBody()
+
+    expect(res.getStatus()).to.equal(201)
+    expect(produto).to.have.property("id")
+    expect(produto.nome).to.equal("Teclado")
+})
+```
+
+| Comando | O que devolve |
+| --- | --- |
+| `res.getStatus()` | o status da resposta |
+| `res.getBody()` | o corpo da resposta |
+
+💡 Quer ver um teste falhando? Troque `201` por `200`, envie, veja a reprovação e desfaça a troca.
+
+## 🔟 Rodando a coleção inteira
+
+1. Reinicie o servidor (`Ctrl + C` e `node --watch loja.js`), para os dados voltarem ao início.
+2. Clique com o botão direito na coleção e escolha **Run Collection**.
+3. Confirme em **Run Collection**.
+
+Todas as requisições rodam em sequência, e no final aparece quantas passaram.
+
+⚠️ Os produtos ficam na memória, e a coleção remove o produto 1. Rodando de novo sem reiniciar, `Atualizar produto` e `Remover produto` dão 404 e seus testes falham. Nesse caso os testes estão certos: o produto realmente não existe mais. Reinicie o servidor antes de cada execução.
+
 # 🗂️ Descrevendo a coleção em código
 
 Uma coleção é, no fundo, uma **lista de requisições** — e cada requisição é um objeto com método, caminho e corpo.
@@ -186,7 +418,7 @@ const colecao = [
 ]
 ```
 
-Isso é exatamente o que as ferramentas salvam em arquivo quando você exporta uma coleção — e é o que você vai montar no exercício desta aula, junto com a API que responde a ela.
+É essa ideia que as ferramentas salvam em arquivo quando você guarda ou exporta uma coleção — e é o que você vai montar no exercício desta aula, junto com a API que responde a ela.
 
 # 📖 Conceitos importantes
 
@@ -199,13 +431,15 @@ Isso é exatamente o que as ferramentas salvam em arquivo quando você exporta u
 | Body | conteúdo enviado na requisição |
 | Status | código que resume o resultado |
 | Coleção | conjunto de requisições salvas |
+| Bruno | cliente HTTP usado nesta aula, dentro do VS Code |
+| Assert | verificação sem código sobre a resposta |
 | `localhost` | a sua própria máquina |
 
 # ⚠️ Erros comuns
 
 ### ❌ Enviar JSON sem o `Content-Type`
 
-O Express ignora o corpo e `req.body` fica vazio. Selecione o tipo **JSON** na aba Body — a ferramenta coloca o header por você.
+O Express ignora o corpo e `req.body` fica `undefined`. Selecione o tipo **JSON** na aba Body — a ferramenta coloca o header por você.
 
 ### ❌ JSON com aspas simples ou chave sem aspas
 
@@ -231,6 +465,18 @@ A ferramenta diz que não conseguiu conectar. Não é bug na requisição — é
 
 Se o `.env` diz `PORT=4000`, a URL precisa ser `localhost:4000`. Com a porta errada, o resultado é o mesmo de servidor desligado.
 
+### ❌ Subir dois servidores na mesma porta
+
+Se a mensagem do servidor aparecer e o terminal voltar na mesma hora, a porta provavelmente já está ocupada por outro servidor. Pare o que está rodando com `Ctrl + C` no outro terminal e tente de novo. Sem isso, você testa a API antiga sem perceber.
+
+### ❌ Usar `{{base_url}}` sem selecionar o ambiente
+
+A variável só existe com o ambiente **local** selecionado no canto superior direito.
+
+### ❌ Alterar a requisição e não salvar
+
+Salve com `Ctrl + S`, ou a alteração não fica guardada na coleção.
+
 Fim da aula!
 
 _
@@ -239,13 +485,15 @@ _
 
 ### 💬 Coleção e API de Tarefas
 
+⚠️ Este exercício tem duas partes, e as duas são obrigatórias: criar a API no `index.js` e **testá-la no Bruno**, na parte final. Não use outra ferramenta.
+
 Crie um arquivo chamado `index.js` que exporte **duas** coisas: a aplicação Express e a descrição da coleção de requisições.
 
 **1. A aplicação (`app`)**, com um array de duas tarefas:
 
 ```jsx
 { id: 1, titulo: "Estudar Express", feita: false }
-{ id: 2, titulo: "Instalar o Insomnia", feita: true }
+{ id: 2, titulo: "Instalar o Bruno", feita: true }
 ```
 
 E estas três rotas:
@@ -276,3 +524,43 @@ module.exports = { app, colecao }
 ```
 
 📌 **Não** chame `app.listen()`.
+
+# 🧪 Segunda parte: testando sua API no Bruno
+
+Depois de passar no `npm test`, faça esta parte **no Bruno**. Ela é obrigatória, mesmo sem entrar na correção automática.
+
+**1.** Pare o servidor da `loja.js` com `Ctrl + C`, porque os dois usam a porta 3000.
+
+**2.** Crie o arquivo `servidor.js`. As chaves em `{ app }` existem porque o `index.js` exporta dois itens:
+
+```jsx
+const { app } = require("./index")
+
+const porta = Number(process.env.PORT) || 3000
+
+app.listen(porta, () => {
+    console.log(`Servidor na porta ${porta}`)
+})
+```
+
+**3.** Suba o servidor:
+
+```bash
+node --watch servidor.js
+```
+
+**4.** Crie a coleção `API de Tarefas`, com **Location** na pasta `aula09` e as mesmas requisições da sua `colecao`:
+
+| Nome | Método | URL | Body | Status esperado |
+| --- | --- | --- | --- | --- |
+| Listar tarefas | GET | `/tarefas` | — | 200 |
+| Listar pendentes | GET | `/tarefas/pendentes` | — | 200 |
+| Criar tarefa | POST | `/tarefas` | `{ "titulo": "Nova tarefa", "feita": false }` | 201 |
+
+**5.** Adicione um **Assert** de status em cada requisição e, em `Listar tarefas`, confira também:
+
+| Expr | Operador | Valor |
+| --- | --- | --- |
+| `res.body.length` | `eq` | `2` |
+
+**6.** Rode a coleção inteira com **Run Collection**. As três requisições devem passar.
