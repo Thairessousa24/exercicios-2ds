@@ -45,5 +45,18 @@ jobs:
         run: npm install
 
       - name: Rodar testes
+        id: testes
         working-directory: 4-bimestre/orientacao-a-objetos/projetos/projeto7/${{ github.actor }}
         run: npm test
+
+      # Roda mesmo com teste falhando, para o aluno ver os dois problemas de uma vez.
+      - name: Verificar coleção do Bruno
+        if: success() || steps.testes.conclusion == 'failure'
+        working-directory: 4-bimestre/orientacao-a-objetos/projetos/projeto7/${{ github.actor }}
+        run: |
+          if [ -f colecao/bruno.json ] || [ -f colecao/opencollection.yml ]; then
+            echo "✅ Coleção do Bruno encontrada!"
+          else
+            echo "::error::Coleção do Bruno não encontrada. Crie a coleção com o nome colecao, na pasta do projeto, e envie a pasta no git push."
+            exit 1
+          fi
