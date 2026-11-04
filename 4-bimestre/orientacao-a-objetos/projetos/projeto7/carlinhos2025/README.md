@@ -122,4 +122,6 @@ node --watch servidor.js
 
 ⚠️ No Body, o JSON precisa de aspas duplas nas chaves: `{ "cliente": "Diego" }`.
 
-**5.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.
+**5.** Reinicie o servidor, rode tudo com **Run Collection** e confira se cada status bate com a tabela.
+
+**6.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.

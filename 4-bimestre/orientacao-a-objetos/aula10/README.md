@@ -464,4 +464,6 @@ node --watch servidor.js
 | Criar com valor invalido | POST | `/pedidos` | `{ "cliente": "Carla", "valor": "trezentos" }` | 400 |
 | JSON quebrado | POST | `/pedidos` | `{ "cliente": "Carla", }` | 400 |
 
+**5.** Rode tudo com **Run Collection** e confira se cada status bate com a tabela.
+
 💡 Repare no `JSON quebrado`: quem responde é o seu middleware de erro. O `express.json()` não consegue ler o corpo, chama `next(erro)` com `status` 400, e a resposta sai em JSON. Na API da aula 9, que não tem middleware de erro, o mesmo problema devolvia uma página HTML.

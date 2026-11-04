@@ -204,4 +204,6 @@ node --watch servidor.js
 
 Nas requisições de erro, confira também a mensagem no campo `erro`.
 
-**5.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.
+**5.** Reinicie o servidor, rode tudo com **Run Collection** e confira se cada status bate com a tabela.
+
+**6.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.

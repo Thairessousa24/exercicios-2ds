@@ -287,6 +287,13 @@ Testar só o caminho feliz não basta. Provoque cada erro abaixo e veja a respos
 
 Salve a primeira como `Criar produto sem nome`. Ela vai para a coleção porque prova que a validação funciona. Depois, suba o servidor de novo.
 
+## 7️⃣ Rodando a coleção inteira
+
+1. Clique com o botão direito na coleção e escolha **Run Collection**.
+2. Confirme em **Run Collection**.
+
+Todas as requisições rodam em sequência, e dá para conferir o status de cada uma.
+
 # 🗂️ Descrevendo a coleção em código
 
 Uma coleção é, no fundo, uma **lista de requisições** — e cada requisição é um objeto com método, caminho e corpo.
@@ -433,4 +440,4 @@ node --watch servidor.js
 | Listar pendentes | GET | `/tarefas/pendentes` | — | 200 |
 | Criar tarefa | POST | `/tarefas` | `{ "titulo": "Nova tarefa", "feita": false }` | 201 |
 
-**5.** Envie cada requisição e confira se o status bate com a tabela.
+**5.** Rode a coleção inteira com **Run Collection** e confira se cada status bate com a tabela.
