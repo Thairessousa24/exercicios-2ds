@@ -136,7 +136,7 @@ Na aula 9 você aprendeu a usar o Bruno. Cada um dos três lugares tem o seu cam
 
 | No código | No Bruno | Exemplo |
 | --- | --- | --- |
-| `req.params` | escreva `:id` na URL e preencha **Params → Path** | URL `{{base_url}}/produtos/:id`, com `id` = `7` |
+| `req.params` | escreva `:id` na URL e preencha **Params → Path** | URL `http://localhost:3000/produtos/:id`, com `id` = `7` |
 | `req.query` | aba **Params → Query** (a URL se atualiza sozinha) | `precoMax` = `100` |
 | `req.body` | aba **Body**, com o tipo **JSON** | `{ "nome": "Teclado", "preco": 150 }` |
 
@@ -449,39 +449,19 @@ app.listen(porta, () => {
 node --watch servidor.js
 ```
 
-**3.** Crie a coleção `API de Pedidos`, com **Location** na pasta `aula10`, e um ambiente `local` com `base_url` igual a `http://localhost:3000`.
+**3.** Crie a coleção `API de Pedidos`, com **Location** na pasta `aula10`.
 
-**4.** Crie as requisições abaixo. Em cada uma, adicione na aba **Assert** a linha `res.status`, `eq` e o status esperado.
+**4.** Crie as requisições abaixo, começando cada URL com `http://localhost:3000`. Envie cada uma e confira se o status é o esperado. Nos erros, confira também a mensagem no campo `erro`.
 
 | Nome | Método | URL | Dado enviado | Status |
 | --- | --- | --- | --- | --- |
-| Listar pedidos | GET | `{{base_url}}/pedidos` | — | 200 |
-| Filtrar pedidos | GET | `{{base_url}}/pedidos` | Query: `valorMin` = `200` | 200 |
-| Buscar pedido | GET | `{{base_url}}/pedidos/:id` | Path: `id` = `1` | 200 |
-| Pedido inexistente | GET | `{{base_url}}/pedidos/:id` | Path: `id` = `99` | 404 |
-| Criar pedido | POST | `{{base_url}}/pedidos` | `{ "cliente": "Carla", "valor": 300 }` | 201 |
-| Criar sem cliente | POST | `{{base_url}}/pedidos` | `{ "valor": 300 }` | 400 |
-| Criar com valor invalido | POST | `{{base_url}}/pedidos` | `{ "cliente": "Carla", "valor": "trezentos" }` | 400 |
-| JSON quebrado | POST | `{{base_url}}/pedidos` | `{ "cliente": "Carla", }` | 400 |
-
-**5.** Nos erros, confira também a mensagem. Em `Pedido inexistente`, adicione ao **Assert**:
-
-| Expr | Operador | Valor |
-| --- | --- | --- |
-| `res.body.erro` | `eq` | `Pedido nao encontrado` |
-
-Faça o mesmo em `Criar sem cliente` e `Criar com valor invalido`, com as mensagens do exercício.
-
-**6.** Em `Filtrar pedidos`, use a aba **Tests** para conferir todos os itens da lista:
-
-```jsx
-test("Todos os pedidos tem valor de 200 ou mais", () => {
-    for (const pedido of res.getBody()) {
-        expect(pedido.valor).to.be.at.least(200)
-    }
-})
-```
-
-**7.** Rode tudo com **Run Collection**. As oito requisições devem passar.
+| Listar pedidos | GET | `/pedidos` | — | 200 |
+| Filtrar pedidos | GET | `/pedidos` | Query: `valorMin` = `200` | 200 |
+| Buscar pedido | GET | `/pedidos/:id` | Path: `id` = `1` | 200 |
+| Pedido inexistente | GET | `/pedidos/:id` | Path: `id` = `99` | 404 |
+| Criar pedido | POST | `/pedidos` | `{ "cliente": "Carla", "valor": 300 }` | 201 |
+| Criar sem cliente | POST | `/pedidos` | `{ "valor": 300 }` | 400 |
+| Criar com valor invalido | POST | `/pedidos` | `{ "cliente": "Carla", "valor": "trezentos" }` | 400 |
+| JSON quebrado | POST | `/pedidos` | `{ "cliente": "Carla", }` | 400 |
 
 💡 Repare no `JSON quebrado`: quem responde é o seu middleware de erro. O `express.json()` não consegue ler o corpo, chama `next(erro)` com `status` 400, e a resposta sai em JSON. Na API da aula 9, que não tem middleware de erro, o mesmo problema devolvia uma página HTML.

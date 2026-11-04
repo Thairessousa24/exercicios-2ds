@@ -6,7 +6,7 @@
 - Montar uma requisição com **método**, **caminho**, **headers** e **body**.
 - Ler uma resposta: **status**, **headers** e **corpo**.
 - Organizar requisições em uma **coleção**.
-- Usar o **Bruno** no VS Code para enviar requisições e criar **testes** para a API.
+- Usar o **Bruno** no VS Code para enviar requisições e conferir as respostas.
 
 # 🤔 Por que preciso de uma ferramenta?
 
@@ -158,22 +158,6 @@ Boas práticas:
 - **uma pasta por recurso** — espelhando a pasta `routes/` da aula 6;
 - guarde também as requisições que dão **erro de propósito** (ex.: "Criar produto sem nome → 400"). São elas que provam que sua validação funciona.
 
-## 🔧 Variáveis de ambiente na ferramenta
-
-As duas ferramentas permitem criar variáveis, como o `.env` da aula 2. Em vez de repetir o endereço em 12 requisições:
-
-```
-http://localhost:3000/produtos
-```
-
-você cria a variável `base_url` e escreve:
-
-```
-{{base_url}}/produtos
-```
-
-Assim, mudar a porta ou publicar a API exige alterar **um** valor, não as 12 requisições.
-
 # 🛠️ Mão na massa: testando com o Bruno
 
 Agora vamos fazer tudo isso de verdade. O **Bruno** é um cliente HTTP gratuito e de código aberto, com extensão para o VS Code.
@@ -181,7 +165,7 @@ Agora vamos fazer tudo isso de verdade. O **Bruno** é um cliente HTTP gratuito 
 | Por que o Bruno nesta aula? | |
 | --- | --- |
 | Sem conta | instalou, já pode usar |
-| Dentro do VS Code | a API e os testes ficam na mesma janela |
+| Dentro do VS Code | a API e as requisições ficam na mesma janela |
 | Funciona no Codespaces | o `localhost` é o mesmo em que sua API está rodando |
 | Coleção em arquivos | fica na pasta do projeto e vai junto no `git push` |
 
@@ -303,67 +287,6 @@ Testar só o caminho feliz não basta. Provoque cada erro abaixo e veja a respos
 
 Salve a primeira como `Criar produto sem nome`. Ela vai para a coleção porque prova que a validação funciona. Depois, suba o servidor de novo.
 
-## 7️⃣ Usando a variável `base_url`
-
-1. No canto superior direito, abra a lista que mostra **No Environment**.
-2. Clique em **Configure** e crie um ambiente chamado `local`.
-3. Adicione a variável `base_url` com o valor `http://localhost:3000` e salve.
-4. Volte à lista e selecione o ambiente **local**.
-5. Nas requisições, troque o começo da URL: `{{base_url}}/produtos`.
-
-⚠️ Se a URL com `{{base_url}}` não funcionar, confira se o ambiente **local** está selecionado.
-
-## 8️⃣ Criando testes
-
-Até aqui, **você** olha a resposta e decide se está certa. Um **teste** faz essa conferência sozinho, toda vez que a requisição é enviada.
-
-### Aba Assert: testes sem código
-
-Abra `Listar produtos`, vá na aba **Assert** e preencha uma linha para cada verificação:
-
-| Expr | Operador | Valor | O que confere |
-| --- | --- | --- | --- |
-| `res.status` | `eq` | `200` | o status é 200 |
-| `res.body` | `isArray` | | o corpo é uma lista |
-| `res.responseTime` | `lt` | `500` | respondeu em menos de 500 ms |
-
-Salve, envie e abra a aba de testes da resposta: cada linha aparece como aprovada ou reprovada.
-
-Agora faça o mesmo em `Criar produto sem nome`:
-
-| Expr | Operador | Valor |
-| --- | --- | --- |
-| `res.status` | `eq` | `400` |
-| `res.body.erro` | `eq` | `O campo nome e obrigatorio` |
-
-### Aba Tests: testes com JavaScript
-
-Para verificações mais detalhadas, use a aba **Tests**. A ideia é parecida com a do Jest. Em `Criar produto`, escreva:
-
-```jsx
-test("Devolve o produto criado", () => {
-    const produto = res.getBody()
-
-    expect(res.getStatus()).to.equal(201)
-    expect(produto.nome).to.equal("Teclado")
-    expect(produto.preco).to.equal(150)
-})
-```
-
-| Comando | O que devolve |
-| --- | --- |
-| `res.getStatus()` | o status da resposta |
-| `res.getBody()` | o corpo da resposta |
-
-💡 Quer ver um teste falhando? Troque `201` por `200`, envie, veja a reprovação e desfaça a troca.
-
-## 9️⃣ Rodando a coleção inteira
-
-1. Clique com o botão direito na coleção e escolha **Run Collection**.
-2. Confirme em **Run Collection**.
-
-Todas as requisições rodam em sequência, e no final aparece quantas passaram.
-
 # 🗂️ Descrevendo a coleção em código
 
 Uma coleção é, no fundo, uma **lista de requisições** — e cada requisição é um objeto com método, caminho e corpo.
@@ -390,7 +313,6 @@ const colecao = [
 | Status | código que resume o resultado |
 | Coleção | conjunto de requisições salvas |
 | Bruno | cliente HTTP usado nesta aula, dentro do VS Code |
-| Assert | verificação sem código sobre a resposta |
 | `localhost` | a sua própria máquina |
 
 # ⚠️ Erros comuns
@@ -426,10 +348,6 @@ Se o `.env` diz `PORT=4000`, a URL precisa ser `localhost:4000`. Com a porta err
 ### ❌ Subir dois servidores na mesma porta
 
 Se a mensagem do servidor aparecer e o terminal voltar na mesma hora, a porta provavelmente já está ocupada por outro servidor. Pare o que está rodando com `Ctrl + C` no outro terminal e tente de novo. Sem isso, você testa a API antiga sem perceber.
-
-### ❌ Usar `{{base_url}}` sem selecionar o ambiente
-
-A variável só existe com o ambiente **local** selecionado no canto superior direito.
 
 ### ❌ Alterar a requisição e não salvar
 
@@ -507,7 +425,7 @@ app.listen(porta, () => {
 node --watch servidor.js
 ```
 
-**4.** Crie a coleção `API de Tarefas`, com **Location** na pasta `aula09` e as mesmas requisições da sua `colecao`:
+**4.** Crie a coleção `API de Tarefas`, com **Location** na pasta `aula09` e as mesmas requisições da sua `colecao`. Comece cada URL com `http://localhost:3000`:
 
 | Nome | Método | URL | Body | Status esperado |
 | --- | --- | --- | --- | --- |
@@ -515,10 +433,4 @@ node --watch servidor.js
 | Listar pendentes | GET | `/tarefas/pendentes` | — | 200 |
 | Criar tarefa | POST | `/tarefas` | `{ "titulo": "Nova tarefa", "feita": false }` | 201 |
 
-**5.** Adicione um **Assert** de status em cada requisição e, em `Listar tarefas`, confira também:
-
-| Expr | Operador | Valor |
-| --- | --- | --- |
-| `res.body.length` | `eq` | `2` |
-
-**6.** Rode a coleção inteira com **Run Collection**. As três requisições devem passar.
+**5.** Envie cada requisição e confira se o status bate com a tabela.

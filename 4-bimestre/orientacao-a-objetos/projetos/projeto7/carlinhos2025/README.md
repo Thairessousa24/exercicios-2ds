@@ -109,9 +109,9 @@ app.listen(porta, () => {
 node --watch servidor.js
 ```
 
-**3.** Crie uma coleção com o nome `colecao`, com **Location** na pasta do projeto, e um ambiente `local`, com `base_url` igual a `http://localhost:3000`.
+**3.** Crie uma coleção com o nome `colecao`, com **Location** na pasta do projeto.
 
-**4.** Crie uma requisição para cada linha abaixo, usando `{{base_url}}` no começo da URL. Em cada uma, adicione na aba **Assert** a linha `res.status`, `eq` e o status esperado.
+**4.** Crie uma requisição para cada linha abaixo, usando `http://localhost:3000` no começo da URL. Envie cada uma e confira se o status é o esperado.
 
 | Requisito | Método | URL | Dado enviado | Status |
 | --- | --- | --- | --- | --- |
@@ -122,6 +122,4 @@ node --watch servidor.js
 
 ⚠️ No Body, o JSON precisa de aspas duplas nas chaves: `{ "cliente": "Diego" }`.
 
-**5.** Reinicie o servidor e rode tudo com **Run Collection**. Todas as requisições devem passar.
-
-**6.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela, cada uma com seu **Assert**.
+**5.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.
