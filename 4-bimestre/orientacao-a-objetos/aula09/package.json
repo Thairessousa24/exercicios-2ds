@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "API de tarefas usando Express",
   "main": "servidor.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node servidor.js",
     "dev": "node --watch servidor.js",
