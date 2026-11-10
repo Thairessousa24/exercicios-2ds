@@ -20,14 +20,13 @@ Tudo o que você aprender aqui será usado no **projeto 7**.
 
 # 🚀 Preparando a API
 
-Vamos continuar a `loja.js` da aula 9. Pare o servidor antigo com `Ctrl + C` e rode:
+Vamos continuar a `loja.js` da aula 9, na mesma pasta `estudos-api`, fora do repositório. Abra essa pasta no VS Code e, no terminal dela, suba o servidor:
 
 ```bash
-cd 4-bimestre/orientacao-a-objetos/aula10
-npm install
-cp ../aula09/loja.js loja.js
 node --watch loja.js
 ```
+
+⚠️ Na pasta `aula10` do repositório, crie **somente** os arquivos do Exercício Rápido. Os exemplos da aula não vão para lá.
 
 Na `loja.js`, dê um `id` para cada produto:
 

@@ -178,14 +178,19 @@ Agora vamos fazer tudo isso de verdade. O **Bruno** é um cliente HTTP gratuito 
 
 ## 2️⃣ Subindo uma API para testar
 
-Precisamos de uma API rodando. No terminal, entre na pasta da aula e instale as dependências:
+Precisamos de uma API rodando. Os exemplos das aulas 9 e 10 são para você acompanhar no seu computador, **fora do repositório**:
+
+1. Crie uma pasta chamada `estudos-api`, fora da pasta do repositório.
+2. Abra essa pasta no VS Code.
+3. No terminal dessa pasta, instale o Express:
 
 ```bash
-cd 4-bimestre/orientacao-a-objetos/aula09
-npm install
+npm install express
 ```
 
-Crie um arquivo chamado `loja.js` e digite o código abaixo. Ele é só um exemplo para treinar a ferramenta, e algumas partes você vai entender melhor na aula 10.
+⚠️ Na pasta `aula09` do repositório, crie **somente** os arquivos do Exercício Rápido. Os exemplos da aula não vão para lá.
+
+Na pasta `estudos-api`, crie um arquivo chamado `loja.js` e digite o código abaixo. Ele é só um exemplo para treinar a ferramenta, e algumas partes você vai entender melhor na aula 10.
 
 ```jsx
 const express = require("express")
@@ -229,10 +234,10 @@ Deve aparecer `API da Loja em http://localhost:3000`.
 1. Clique no ícone do **Bruno** na barra lateral.
 2. Clique em **Create Collection**.
 3. Em **Collection Name**, escreva `API da Loja`.
-4. Em **Location**, escolha a pasta `aula09`.
+4. Em **Location**, escolha a pasta `estudos-api`.
 5. Confirme em **Create Collection**.
 
-A coleção aparece na lateral, e uma pasta com os arquivos dela é criada dentro de `aula09`.
+A coleção aparece na lateral, e uma pasta com os arquivos dela é criada dentro de `estudos-api`.
 
 ## 4️⃣ Sua primeira requisição: GET
 
