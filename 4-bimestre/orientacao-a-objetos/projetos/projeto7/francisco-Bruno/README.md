@@ -125,8 +125,6 @@ teatro-ingressos
 ┃ ┗ validarIngresso.js     ← middleware de validacao
 ┣ routes
 ┃ ┗ ingressos.js             ← rotas de ingressos
-┣ colecao                      ← coleção do Bruno (item de entrega)
-┣ servidor.js                  ← sobe a API para testar no Bruno
 ┣ test
 ┃ ┗ ingressos.test.js
 ┣ package.json
@@ -164,9 +162,9 @@ O estudante deverá decidir como organizar as funções dentro dos arquivos.
 
 # 🧪 TESTANDO NO BRUNO
 
-Além de passar no `npm test`, sua API precisa ser testada no **Bruno**. Se ainda não instalou a extensão, siga a seção **Mão na massa** da aula 9.
+Antes de entregar, teste sua API no **Bruno**, como um cliente de verdade faria. Se ainda não instalou a extensão, siga a seção **Mão na massa** da aula 9.
 
-⚠️ **A coleção do Bruno é item de entrega.** A correção automática reprova o projeto se a pasta `colecao` não for enviada, mesmo com o `npm test` passando. O conteúdo da coleção é conferido pelo professor.
+📌 Esta parte é para você conferir sua API. Ela não é cobrada na entrega nem muda a correção automática.
 
 **1.** Crie o arquivo `servidor.js` na pasta do projeto. Ele é um arquivo a mais, e o `index.js` continua sem `app.listen()`:
 
@@ -186,7 +184,7 @@ app.listen(porta, () => {
 node --watch servidor.js
 ```
 
-**3.** Crie uma coleção com o nome `colecao`, com **Location** na pasta do projeto.
+**3.** Crie uma coleção no Bruno, com **Location** na pasta do projeto.
 
 **4.** Crie uma requisição para cada linha abaixo, usando `http://localhost:3000` no começo da URL. Envie cada uma e confira se o status é o esperado.
 
@@ -205,5 +203,3 @@ node --watch servidor.js
 Nas requisições de erro, confira também a mensagem no campo `erro`.
 
 **5.** Reinicie o servidor, rode tudo com **Run Collection** e confira se cada status bate com a tabela.
-
-**6.** Envie a pasta `colecao` e o `servidor.js` no `git push`, junto com o restante do projeto. A coleção entregue precisa ter todas as requisições da tabela.
