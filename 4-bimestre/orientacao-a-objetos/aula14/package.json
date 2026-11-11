@@ -1,0 +1,16 @@
+{
+  "name": "aula14",
+  "version": "1.0.0",
+  "description": "Ler arquivos com readFile. Transformar texto em lista com JSON.parse. Tratar o arquivo que ainda não existe. Salvar um novo registro no arquivo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
