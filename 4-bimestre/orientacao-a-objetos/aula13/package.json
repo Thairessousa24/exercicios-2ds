@@ -1,0 +1,16 @@
+{
+  "name": "aula13",
+  "version": "1.0.0",
+  "description": "Entender por que os dados em memória se perdem. Gravar dados em arquivo com fs/promises. Usar async e await. Gravar uma lista no formato JSON.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
