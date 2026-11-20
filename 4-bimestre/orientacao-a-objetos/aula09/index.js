@@ -1,21 +1,11 @@
-
 const express = require("express")
 
 const app = express()
-
 app.use(express.json())
 
 const tarefas = [
-    {
-        id: 1,
-        titulo: "Estudar Express",
-        feita: false
-    },
-    {
-        id: 2,
-        titulo: "Instalar o Bruno",
-        feita: true
-    }
+    { id: 1, titulo: "Estudar Express", feita: false },
+    { id: 2, titulo: "Instalar o Bruno", feita: true }
 ]
 
 app.get("/tarefas", (req, res) => {
@@ -23,15 +13,11 @@ app.get("/tarefas", (req, res) => {
 })
 
 app.get("/tarefas/pendentes", (req, res) => {
-    const pendentes = tarefas.filter(tarefa => tarefa.feita === false)
-
-    res.status(200).json(pendentes);
+    res.status(200).json(tarefas.filter(tarefa => tarefa.feita === false))
 })
 
 app.post("/tarefas", (req, res) => {
-    res.status(201).json({
-        mensagem: "Tarefa criada"
-    })
+    res.status(201).json({ mensagem: "Tarefa criada" })
 })
 
 const colecao = [
@@ -49,13 +35,8 @@ const colecao = [
         nome: "Criar tarefa",
         metodo: "POST",
         caminho: "/tarefas",
-        body: {
-            titulo: "Nova tarefa",
-            feita: false
-        },
-        headers: {
-            "Content-Type": "application/json"
-        }
+        body: { titulo: "Nova tarefa", feita: false },
+        headers: { "Content-Type": "application/json" }
     }
 ]
 

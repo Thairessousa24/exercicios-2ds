@@ -1,4 +1,3 @@
-
 const { app } = require("./index")
 
 const porta = Number(process.env.PORT) || 3000
