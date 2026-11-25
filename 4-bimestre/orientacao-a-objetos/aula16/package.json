@@ -1,0 +1,16 @@
+{
+  "name": "aula16",
+  "version": "1.0.0",
+  "description": "Remover um registro com filter. Apagar um arquivo inteiro com unlink. Criar uma rota DELETE. Fechar o CRUD com arquivo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}

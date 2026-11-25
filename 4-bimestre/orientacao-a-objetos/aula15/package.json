@@ -1,0 +1,16 @@
+{
+  "name": "aula15",
+  "version": "1.0.0",
+  "description": "Encontrar um registro com findIndex. Alterar só os campos enviados com o spread. Gravar a alteração no arquivo. Criar uma rota PUT.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2"
+  }
+}
